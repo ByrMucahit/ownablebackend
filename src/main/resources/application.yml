@@ -1,10 +1,16 @@
 spring:
   datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ownablebackend
-    username: postgres
-    password: ownableverysecretpassword
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ownablebackend
+    username: root
+    password: ownablesecretpassword
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+ownable:
+  app:
+    jwt:
+      secret: ownableSecretKey
+      expiration-ms: 86400000
