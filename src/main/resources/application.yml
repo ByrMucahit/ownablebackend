@@ -1,9 +1,9 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ownablebackend
-    username: root
-    password: ownablesecretpassword
+    url: ${SPRING_ROOT_URL}
+    username: ${SPRING_ROOT_USERNAME}
+    password: ${SPRING_ROOT_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update

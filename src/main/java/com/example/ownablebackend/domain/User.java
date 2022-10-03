@@ -20,38 +20,39 @@ import java.util.Set;
 
 @Data
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @NonNull
-    @Column(unique = true, length = 45)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @NonNull
-    @Column(length = 64)
+    @Column(nullable = false, length = 64)
     private String password;
+
 
     private String firstName;
 
+
     private String lastName;
+
 
     private String userName;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-    joinColumns = @JoinColumn(name="user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<UserRole> roles = new HashSet<>();
+    @JoinTable(name= "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<UserRole> roles= new HashSet<>();
 
-    public User(String userName, String email, String password){
+    public User(String userName,String password, String email, String firstName, String lastName){
+        this.userName = userName;
         this.email = email;
         this.password = password;
-        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
 

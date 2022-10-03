@@ -67,9 +67,12 @@ public class UserServiceImpl implements UserService {
         }
 
         // Create new user's account
-        User user = new User(userName,
+        User user = new User(
+                userName,
                 encoder.encode(signupRequest.getPassword()),
-                signupRequest.getEmail()
+                signupRequest.getEmail(),
+                signupRequest.getFirstName(),
+                signupRequest.getLastName()
         );
 
         Set<String> strRoles = signupRequest.getRole();

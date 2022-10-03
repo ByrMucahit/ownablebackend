@@ -39,7 +39,7 @@ public class AuthResource {
         var response = userService.saveUser(signUpRequest);
 
         if(!Objects.isNull(response)) {
-            ResponseEntity
+            return ResponseEntity
                     .badRequest()
                     .body(response);
         }
