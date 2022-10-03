@@ -43,7 +43,7 @@ public class AuthResource {
                     .badRequest()
                     .body(response);
         }
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(response);
     }
 
 }

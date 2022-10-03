@@ -10,6 +10,7 @@ import com.example.ownablebackend.config.security.services.UserDetailsImpl;
 import com.example.ownablebackend.domain.User;
 import com.example.ownablebackend.domain.UserRole;
 import com.example.ownablebackend.domain.enumeration.UserRoles;
+import com.example.ownablebackend.exception.FormatterException;
 import com.example.ownablebackend.repositories.RoleRepository;
 import com.example.ownablebackend.repositories.UserRepository;
 import com.example.ownablebackend.services.UserService;
@@ -30,11 +31,14 @@ import java.util.HashSet;
 import java.util.List;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final String REGEX_PATTERN = "^(.+)@(\\S+)$";
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -57,6 +61,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MessageResponse saveUser(SignupRequest signupRequest) {
+        this.patternMatches(signupRequest.getEmail());
+
         var userName = signupRequest.getFirstName() + " " + signupRequest.getLastName();
         if (userRepository.existsByUserName(userName)) {
             return (new MessageResponse("Error: Username is already taken!"));
@@ -107,11 +113,12 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(roles);
         userRepository.save(user);
-    return null;
+    return new MessageResponse("User registered successfully!");
     }
 
     @Override
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
+        this.patternMatches(loginRequest.getEmail());
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -130,5 +137,19 @@ public class UserServiceImpl implements UserService {
                 userDetails.getEmail(),
                 roles);
 
+    }
+
+
+    private boolean patternMatches(String emailAddress) {
+
+        var response = Pattern.compile(REGEX_PATTERN)
+                .matcher(emailAddress)
+                .matches();
+
+        if(!response) {
+            throw new FormatterException(emailAddress);
+        }
+
+        return true;
     }
 }
