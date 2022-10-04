@@ -1,10 +1,23 @@
 spring:
   datasource:
-    driverClassName: org.postgresql.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:postgresql://localhost:5432/ownablebackend
-    username: postgres
+    username: root
     password: ownableverysecretpassword
   jpa:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: m.mucahitbayar@gmail.com
+    password: Fb05435446158
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+      protocol: smtp
+      test-connection: false
