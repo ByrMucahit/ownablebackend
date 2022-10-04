@@ -63,9 +63,9 @@ public class UserServiceImpl implements UserService {
     public MessageResponse saveUser(SignupRequest signupRequest) {
         this.patternMatches(signupRequest.getEmail());
 
-        var userName = signupRequest.getFirstName() + " " + signupRequest.getLastName();
+        var userName = signupRequest.getEmail();
         if (userRepository.existsByUserName(userName)) {
-            return (new MessageResponse("Error: Username is already taken!"));
+            return new MessageResponse("Error: Username is already taken!");
         }
 
         if (userRepository.existsByEmail(signupRequest.getEmail())) {

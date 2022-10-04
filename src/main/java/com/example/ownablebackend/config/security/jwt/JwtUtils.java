@@ -20,8 +20,6 @@ public class JwtUtils {
     @Value("${ownable.app.jwt.expiration-ms}")
     private int jwtExpirationMs;
 
-
-
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl usePrincipal = (UserDetailsImpl) authentication.getPrincipal();
         return Jwts.builder()
@@ -51,5 +49,4 @@ public class JwtUtils {
         }
         return false;
     }
-
 }

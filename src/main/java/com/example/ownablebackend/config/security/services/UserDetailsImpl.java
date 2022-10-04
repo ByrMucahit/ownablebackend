@@ -14,9 +14,10 @@ import java.util.stream.Collectors;
 @Builder
 public class UserDetailsImpl implements UserDetails {
 
+
     private Long id;
 
-    private String userName;
+    private String username;
 
     private String email;
 
@@ -25,14 +26,12 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id
-            , String userName
-            , String email
-            , String password
-            , Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String email, String password,
+                           Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.userName = userName;
+        this.username = username;
         this.email = email;
+        this.password = password;
         this.authorities = authorities;
     }
 
@@ -52,21 +51,21 @@ public class UserDetailsImpl implements UserDetails {
         );
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
-
 
     public Long getId() {
         return id;
@@ -78,21 +77,21 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
