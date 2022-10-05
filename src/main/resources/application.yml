@@ -12,15 +12,15 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: m.mucahitbayar@gmail.com
-    password: Fb05435446158
+    password: zrasqhqsxalqocnw
+    protocol: smtp
     properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-      protocol: smtp
-      test-connection: false
+      'mail.smtp.ssl.enable': true
+    messages:
+      cache-duration: PT1S # 1 second, see the ISO 8601 standard
+    thymeleaf:
+      cache: false
+
 
 ownable:
   app:
