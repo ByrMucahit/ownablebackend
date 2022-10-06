@@ -14,6 +14,7 @@ import com.example.ownablebackend.domain.enumeration.UserRoles;
 import com.example.ownablebackend.dto.mailservice.EmailDetails;
 import com.example.ownablebackend.exception.FormatterException;
 import com.example.ownablebackend.exception.NotActivatedUserException;
+import com.example.ownablebackend.exception.PasswordException;
 import com.example.ownablebackend.repositories.RoleRepository;
 import com.example.ownablebackend.repositories.UserRepository;
 import com.example.ownablebackend.services.UserService;
@@ -72,7 +73,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MessageResponse saveUser(SignupRequest signupRequest) {
+
         this.patternMatches(signupRequest.getEmail());
+        this.checksBothPasswordAndConfirmSame(signupRequest.getPassword(), signupRequest.getConfirmPassword());
 
         var userName = signupRequest.getEmail();
 
@@ -135,6 +138,12 @@ public class UserServiceImpl implements UserService {
         emailDetails.setMsgBody("Hey! "+ recipient + "You're the new one for us. We're excited to meet with you.");
 
         return emailDetails;
+    }
+
+    private void checksBothPasswordAndConfirmSame(String password, String confirmPassword) {
+        if(!password.equals(confirmPassword)) {
+            throw new PasswordException("The Password And Confirm Password must be same.");
+        }
     }
 
     @Override
