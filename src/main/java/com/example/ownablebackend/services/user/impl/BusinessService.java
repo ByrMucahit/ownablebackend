@@ -1,4 +1,4 @@
-package com.example.ownablebackend.services.impl;
+package com.example.ownablebackend.services.user.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
