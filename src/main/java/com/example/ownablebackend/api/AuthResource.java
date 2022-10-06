@@ -2,6 +2,7 @@ package com.example.ownablebackend.api;
 
 import com.example.ownablebackend.api.request.LoginRequest;
 import com.example.ownablebackend.api.request.SignupRequest;
+import com.example.ownablebackend.api.response.JwtResponse;
 import com.example.ownablebackend.api.response.MessageResponse;
 import com.example.ownablebackend.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +30,13 @@ public class AuthResource {
    }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
         log.info("The REST API to sign in " + loginRequest);
         return ResponseEntity.ok(userService.authenticateUser(loginRequest));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         var response = userService.saveUser(signUpRequest);
 
         if(!Objects.isNull(response)) {

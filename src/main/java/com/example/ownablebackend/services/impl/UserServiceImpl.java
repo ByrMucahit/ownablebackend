@@ -7,21 +7,24 @@ import com.example.ownablebackend.api.response.MessageResponse;
 import com.example.ownablebackend.config.security.jwt.JwtUtils;
 
 import com.example.ownablebackend.config.security.services.UserDetailsImpl;
+import com.example.ownablebackend.constant.GlobalConstant;
 import com.example.ownablebackend.domain.User;
 import com.example.ownablebackend.domain.UserRole;
 import com.example.ownablebackend.domain.enumeration.UserRoles;
+import com.example.ownablebackend.dto.mailservice.EmailDetails;
 import com.example.ownablebackend.exception.FormatterException;
+import com.example.ownablebackend.exception.NotActivatedUserException;
 import com.example.ownablebackend.repositories.RoleRepository;
 import com.example.ownablebackend.repositories.UserRepository;
 import com.example.ownablebackend.services.UserService;
+import com.example.ownablebackend.services.email.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,23 +43,31 @@ public class UserServiceImpl implements UserService {
 
     private static final String REGEX_PATTERN = "^(.+)@(\\S+)$";
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+    private final EmailService emailService;
 
-    @Autowired
-    JwtUtils jwtUtils;
+    private final PasswordEncoder encoder;
 
-    private UserServiceImpl(AuthenticationManager authenticationManager) {
+    private final JwtUtils jwtUtils;
+
+    public UserServiceImpl(AuthenticationManager authenticationManager,
+                            UserRepository userRepository,
+                            RoleRepository roleRepository,
+                            JwtUtils jwtUtils,
+                           EmailService emailService,
+                           PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.jwtUtils = jwtUtils;
+        this.emailService = emailService;
+        this.encoder = passwordEncoder;
+
     }
 
     @Override
@@ -64,12 +75,10 @@ public class UserServiceImpl implements UserService {
         this.patternMatches(signupRequest.getEmail());
 
         var userName = signupRequest.getEmail();
-        if (userRepository.existsByUserName(userName)) {
-            return new MessageResponse("Error: Username is already taken!");
-        }
 
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            return new MessageResponse("Error: Email is already in use!");
+        boolean existResponse = userRepository.existsByUserName(userName);
+        if (existResponse) {
+            return new MessageResponse(GlobalConstant.EXIST_EMAIL);
         }
 
         // Create new user's account
@@ -78,7 +87,8 @@ public class UserServiceImpl implements UserService {
                 encoder.encode(signupRequest.getPassword()),
                 signupRequest.getEmail(),
                 signupRequest.getFirstName(),
-                signupRequest.getLastName()
+                signupRequest.getLastName(),
+                false
         );
 
         Set<String> strRoles = signupRequest.getRole();
@@ -86,26 +96,26 @@ public class UserServiceImpl implements UserService {
 
         if (strRoles == null) {
             UserRole userRole = roleRepository.findByName(UserRoles.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(() -> new RuntimeException(GlobalConstant.NOT_FOUND_ROL));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
                         UserRole adminRole = roleRepository.findByName(UserRoles.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(GlobalConstant.NOT_FOUND_ROL));
                         roles.add(adminRole);
 
                         break;
                     case "mod":
                         UserRole modRole = roleRepository.findByName(UserRoles.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(GlobalConstant.NOT_FOUND_ROL));
                         roles.add(modRole);
 
                         break;
                     default:
                         UserRole userRole = roleRepository.findByName(UserRoles.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(GlobalConstant.NOT_FOUND_ROL));
                         roles.add(userRole);
                 }
             });
@@ -113,7 +123,18 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(roles);
         userRepository.save(user);
+
+        emailService.sendSimpleMail(prepareMailDetail(user.getEmail()));
     return new MessageResponse("User registered successfully!");
+    }
+
+    private EmailDetails prepareMailDetail(String recipient) {
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setRecipient(recipient);
+        emailDetails.setSubject("Welcome To The Ownable-NS");
+        emailDetails.setMsgBody("Hey! "+ recipient + "You're the new one for us. We're excited to meet with you.");
+
+        return emailDetails;
     }
 
     @Override
@@ -123,12 +144,13 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
+        this.checkUserStatus(loginRequest.getEmail());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         return new JwtResponse(jwt,
@@ -136,12 +158,18 @@ public class UserServiceImpl implements UserService {
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles);
+    }
 
+    private void checkUserStatus(String userName) {
+        var user = userRepository.findByUserName(userName);
+
+        if(!user.get().isActive()) {
+            throw new NotActivatedUserException(userName);
+        }
     }
 
 
-    private boolean patternMatches(String emailAddress) {
-
+    private void patternMatches(String emailAddress) {
         var response = Pattern.compile(REGEX_PATTERN)
                 .matcher(emailAddress)
                 .matches();
@@ -149,7 +177,5 @@ public class UserServiceImpl implements UserService {
         if(!response) {
             throw new FormatterException(emailAddress);
         }
-
-        return true;
     }
 }

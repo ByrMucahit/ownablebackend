@@ -80,4 +80,25 @@ public class EmailServiceImpl implements EmailService {
             return "Error while sending mail!!!";
         }
     }
+
+    @Override
+    public String sendRegisteredUserMail(EmailDetails emailDetails) {
+
+        try {
+
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setFrom(sender);
+            mailMessage.setTo(emailDetails.getRecipient());
+            mailMessage.setText(emailDetails.getMsgBody());
+            mailMessage.setSubject(emailDetails.getSubject());
+
+            // Sending the mail
+            javaMailSender.send(mailMessage);
+            return "Mail Sent Successfully...";
+        } // Catch block to handle the exceptions
+        catch (Exception e) {
+            log.info("Debug: %s", e);
+            return "Error while Sending Mail";
+        }
+    }
 }
