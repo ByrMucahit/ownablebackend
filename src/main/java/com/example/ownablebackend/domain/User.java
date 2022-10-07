@@ -40,6 +40,10 @@ public class User {
 
     private boolean isActive;
 
+    private String langKey;
+
+    private String activationKey;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name= "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

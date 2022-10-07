@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         userRepository.save(user);
 
-        emailService.sendSimpleMail(prepareMailDetail(user.getEmail()));
+        emailService.sendActivationMail(user);
     return new MessageResponse("User registered successfully!");
     }
 
