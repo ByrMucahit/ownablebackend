@@ -34,6 +34,8 @@ public class EmailServiceImpl implements EmailService {
 
     private static final String BASE_URL = "baseUrl";
 
+    private static final String ENGLISH = "ENGLISH";
+
     private final SpringTemplateEngine templateEngine;
 
     private final MessageSource messageSource;
@@ -76,10 +78,10 @@ public class EmailServiceImpl implements EmailService {
             log.debug("Email does not exist for user '{}'", user.getEmail());
         }
 
-        Locale locale = Locale.forLanguageTag("en");
+        Locale locale = Locale.forLanguageTag(ENGLISH);
         Context context = new Context(locale);
         context.setVariable(USER, user);
-        context.setVariable(BASE_URL, "http://localhost:8080");
+        context.setVariable(BASE_URL, "http://127.0.0.1:3001");
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
         try {
@@ -93,7 +95,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendActivationMail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/activationEmail", "RESET");
+        sendEmailFromTemplate(user, "mail/activationEmail", "email.reset");
     }
 
     public String
