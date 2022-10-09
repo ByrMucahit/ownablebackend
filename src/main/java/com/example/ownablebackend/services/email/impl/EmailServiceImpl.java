@@ -83,9 +83,9 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, "http://127.0.0.1:3001");
         String content = templateEngine.process(templateName, context);
-        String subject = messageSource.getMessage(titleKey, null, locale);
+        //String subject = messageSource.getMessage(titleKey, null, Locale.ENGLISH);
         try {
-            sendEmail(user.getEmail(), subject, content, false, true);
+            sendEmail(user.getEmail(), "Hello World", content, false, true);
         } catch (Exception e) {
             log.error("Error occured while sending email", e);
         }
