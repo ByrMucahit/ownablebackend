@@ -25,7 +25,6 @@ import com.example.ownablebackend.services.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,10 +37,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.context.MessageSource;
-import org.springframework.core.env.Environment;
 
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.List;
 
@@ -76,10 +73,8 @@ public class UserServiceImpl implements UserService {
 
     private final MessageSource messages;
 
-
     @Value("${spring.mail.username}")
     private String from;
-
 
     @Override
     public MessageResponse saveUser(SignupRequest signupRequest) {
