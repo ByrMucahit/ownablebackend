@@ -27,3 +27,6 @@ ownable:
     jwt:
       secret: ownableSecretKey
       expiration-ms: 86400000
+
+server:
+  port: 8081
