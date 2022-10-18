@@ -63,6 +63,8 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/mail/**").permitAll()
                 .antMatchers("/api/nft/*").permitAll()
                 .antMatchers("/api/nft/file/*").permitAll()
+                .antMatchers("/api/*").permitAll()
+                .antMatchers("/api/create/*").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -1,5 +1,6 @@
-package com.example.ownablebackend.api.ipfs;
+package com.example.ownablebackend.api.controller.ipfs;
 
+import com.example.ownablebackend.client.ipfs.IpfsClient;
 import com.example.ownablebackend.services.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +21,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class IPFSController {
 
     @Autowired
-    private FileService fileService;
+    private IpfsClient ipfsClient;
 
     @PostMapping(value = "upload")
     public String saveFile(@RequestParam("file")MultipartFile multipartFile) {
-        return fileService.saveFile(multipartFile);
+        return ipfsClient.saveFile(multipartFile);
     }
 
     @GetMapping(value = "file/{hash}")
     public ResponseEntity<byte[]> loadFile(@PathVariable("hash") String hash) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", MediaType.ALL_VALUE);
-        byte[] bytes = fileService.loadFile(hash);
+        byte[] bytes = ipfsClient.loadFile(hash);
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(bytes);
     }
 }

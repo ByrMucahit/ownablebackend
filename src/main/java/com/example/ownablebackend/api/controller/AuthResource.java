@@ -1,10 +1,11 @@
-package com.example.ownablebackend.api;
+package com.example.ownablebackend.api.controller;
 
 import com.example.ownablebackend.api.request.LoginRequest;
 import com.example.ownablebackend.api.request.SignupRequest;
 import com.example.ownablebackend.api.response.MessageResponse;
 import com.example.ownablebackend.services.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,7 +29,7 @@ public class AuthResource {
        this.userService = userService;
    }
 
-    @PostMapping("/signin")
+    @PostMapping(value = "/signin")
     public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
         log.info("The REST API to sign in " + loginRequest);
         return ResponseEntity.ok(userService.authenticateUser(loginRequest));

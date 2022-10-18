@@ -1,10 +1,10 @@
 package com.example.ownablebackend.services.file;
 
-import org.springframework.web.multipart.MultipartFile;
+import com.example.ownablebackend.domain.Files;
 
 public interface FileService {
 
-    String saveFile(MultipartFile file);
+    void saveFile(Files files);
 
     byte[] loadFile(String hash);
 }

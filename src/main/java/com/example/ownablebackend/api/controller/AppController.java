@@ -1,4 +1,4 @@
-package com.example.ownablebackend.api;
+package com.example.ownablebackend.api.controller;
 
 import com.example.ownablebackend.dto.mailservice.EmailDetails;
 import com.example.ownablebackend.services.email.EmailService;
