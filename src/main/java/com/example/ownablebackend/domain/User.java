@@ -41,18 +41,26 @@ public class User {
 
     private String userName;
 
+    private boolean isActive;
+
+    private String langKey;
+
+    private String activationKey;
+
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name= "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<UserRole> roles= new HashSet<>();
 
-    public User(String userName,String password, String email, String firstName, String lastName){
+    public User(String userName,String password, String email, String firstName, String lastName, boolean isActive){
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.isActive = isActive;
     }
 
 

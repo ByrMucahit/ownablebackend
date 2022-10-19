@@ -3,6 +3,7 @@ package com.example.ownablebackend.services.createnft.impl;
 import com.example.ownablebackend.api.request.SignupRequest;
 import com.example.ownablebackend.api.request.createnft.CreateNftRequest;
 import com.example.ownablebackend.api.response.MessageResponse;
+import com.example.ownablebackend.api.response.createnft.CreateNftResponse;
 import com.example.ownablebackend.client.ipfs.IpfsClient;
 import com.example.ownablebackend.domain.Files;
 import com.example.ownablebackend.services.UserService;
@@ -65,7 +66,7 @@ public class CreateNftServiceImpl implements CreateNftService {
     }
 
     private void checkUserRegistered(MessageResponse response) {
-        if(!Objects.isNull(response)) {
+        if(Objects.isNull(response)) {
            throw new RuntimeException("User haven't been registered ");
         }
         log.info("User has been registered.");

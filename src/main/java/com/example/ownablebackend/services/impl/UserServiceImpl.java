@@ -78,7 +78,8 @@ public class UserServiceImpl implements UserService {
                 encoder.encode(signupRequest.getPassword()),
                 signupRequest.getEmail(),
                 signupRequest.getFirstName(),
-                signupRequest.getLastName()
+                signupRequest.getLastName(),
+                false
         );
 
         Set<String> strRoles = signupRequest.getRole();
