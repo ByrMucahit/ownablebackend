@@ -33,3 +33,8 @@ server:
 
 ipfs:
   config: "/ip4/127.0.0.1/tcp/5001"
+
+application:
+  pinata-api-key: ${PINATA_API_KEY}
+  pinata-secret-api-key: ${PINATA_API_SECRET_KEY}
+  pinata-secret-access-token: ${PINATA_SECRET_ACCESS_TOKEN}
