@@ -1,6 +1,7 @@
 package com.example.ownablebackend.api.controller.pinata;
 
 import com.example.ownablebackend.api.response.pinata.PinataAuthenticationResponse;
+import com.example.ownablebackend.api.response.pinata.PinataPinResponse;
 import com.example.ownablebackend.services.pinata.PinataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ public class PinataController {
     }
 
     @PostMapping("/pin-to-ipfs")
-    public PinataAuthenticationResponse pinToIpfs() {
+    public PinataPinResponse pinToIpfs() {
         return this.pinataService.pinService();
     }
 }

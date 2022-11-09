@@ -6,6 +6,7 @@ import com.example.ownablebackend.api.request.pinata.PinataContent;
 import com.example.ownablebackend.api.request.pinata.PinataMetaData;
 import com.example.ownablebackend.api.request.pinata.PinataOptions;
 import com.example.ownablebackend.api.response.pinata.PinataAuthenticationResponse;
+import com.example.ownablebackend.api.response.pinata.PinataPinResponse;
 import com.example.ownablebackend.config.properties.ApplicationProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -49,7 +50,7 @@ public class PinataManager {
     }
 
     @Transactional
-    public PinataAuthenticationResponse pinataApiToPin() {
+    public PinataPinResponse pinataApiToPin() {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
@@ -67,8 +68,8 @@ public class PinataManager {
             String pinUrl = "https://api.pinata.cloud/pinning/pinJSONToIPFS";
 
 
-            ResponseEntity<PinataAuthenticationResponse> exchange =
-                    this.restTemplate.exchange(pinUrl, HttpMethod.POST, request, PinataAuthenticationResponse.class);
+            ResponseEntity<PinataPinResponse> exchange =
+                    this.restTemplate.exchange(pinUrl, HttpMethod.POST, request, PinataPinResponse.class);
 
             return exchange.getBody();
         }catch (Exception e) {

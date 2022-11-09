@@ -1,6 +1,7 @@
 package com.example.ownablebackend.services.pinata.impl;
 
 import com.example.ownablebackend.api.response.pinata.PinataAuthenticationResponse;
+import com.example.ownablebackend.api.response.pinata.PinataPinResponse;
 import com.example.ownablebackend.managers.pinata.PinataManager;
 import com.example.ownablebackend.services.pinata.PinataService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class PinataServiceImpl implements PinataService {
     }
 
     @Override
-    public PinataAuthenticationResponse pinService() {
+    public PinataPinResponse pinService() {
     return this.pinataManager.pinataApiToPin();
     }
 }
